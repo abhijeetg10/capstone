@@ -1,0 +1,16 @@
+.git
+.gitignore
+.dockerignore
+node_modules
+dist
+build
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+README.md
+docs
+.vscode
+.idea

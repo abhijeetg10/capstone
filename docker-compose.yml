@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: disease_surveillance_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-disease_surveillance}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./database/schema:/docker-entrypoint-initdb.d
+    networks:
+      - surveillance-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - DB_NAME=${POSTGRES_DB:-disease_surveillance}
+      - JWT_SECRET=${JWT_SECRET:-supersecret}
+      - AI_SERVICE_URL=http://ai-service:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - surveillance-network
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_ai
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - surveillance-network
+
+  flower-server:
+    build:
+      context: ./flower-server
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_server
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - surveillance-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - surveillance-network
+
+volumes:
+  db-data:
+
+networks:
+  surveillance-network:
+    driver: bridge
