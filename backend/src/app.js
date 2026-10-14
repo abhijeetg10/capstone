@@ -28,8 +28,10 @@ import integrationRoutes from './routes/integrationRoutes.js';
 import limsIntegrationRoutes from './routes/limsIntegrationRoutes.js';
 import pmsIntegrationRoutes from './routes/pmsIntegrationRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import erdRoutes from './routes/erdRoutes.js';
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/erd', erdRoutes);
 app.use('/api/hospital', hospitalRoutes);
 app.use('/api/laboratory', laboratoryRoutes);
 app.use('/api/pharmacy', pharmacyRoutes);

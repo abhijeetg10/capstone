@@ -1,0 +1,3 @@
+Architecture,Best_Config,Val_PR_AUC
+MLP,"{'lr': 0.0005, 'drop': 0.2}",0.06758239005276272
+GRU,"{'lr': 0.001, 'hid': 32, 'seq': 7}",0.05303049357190224

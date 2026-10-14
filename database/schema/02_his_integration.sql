@@ -8,12 +8,23 @@ CREATE TABLE IF NOT EXISTS local_patient_records (
     age INT,
     gender VARCHAR(20),
     ward VARCHAR(100),
-    symptoms TEXT[], -- Array of symptoms
+    ward_area_id VARCHAR(100),
+    district VARCHAR(100),
+    symptoms TEXT[], -- Array of symptoms e.g. Fever, Cough, Diarrhea, Headache
+    comorbidities TEXT[], -- Array of comorbidities e.g. Diabetes, Hypertension
     vital_signs JSONB, -- Stored as JSON
+    lab_test_name VARCHAR(150),
+    lab_result VARCHAR(50), -- Positive, Negative, Pending
+    pathogen_detected VARCHAR(150),
     lab_test_requests TEXT[],
     doctor_notes TEXT,
+    diagnosis VARCHAR(255),
+    diagnosis_status VARCHAR(50), -- Confirmed, Suspected, Presumptive
+    visit_date TIMESTAMP,
     admission_date TIMESTAMP,
-    visit_type VARCHAR(50),
+    discharge_date TIMESTAMP,
+    diagnosis_date TIMESTAMP,
+    visit_type VARCHAR(50), -- Inpatient, Outpatient OPD, Emergency
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     processed_by_ai BOOLEAN DEFAULT FALSE
 );

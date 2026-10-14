@@ -1,0 +1,18 @@
+{
+    "num_days": 1095,
+    "population": 100000,
+    "sigma": 0.2,
+    "gamma": 0.14285714285714285,
+    "loss_of_immunity": 0.005555555555555556,
+    "baseline_beta": 0.15,
+    "importation_prob": 0.02,
+    "hospital_care_prob": 0.15,
+    "hospital_delay": [
+        0.2,
+        0.5,
+        0.3
+    ],
+    "outbreak_threshold": 40,
+    "version": "V2.1_FINAL",
+    "FROZEN_FOR_EXPERIMENTS": true
+}

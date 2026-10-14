@@ -1,0 +1,12 @@
+{
+    "Total Onsets": 3,
+    "Detected Onsets": 0,
+    "Missed Onsets": 3,
+    "Detection Rate": 0.0,
+    "Mean Lead Time": 0,
+    "Median Lead Time": 0,
+    "Total Warning Episodes": 2,
+    "True Warning Episodes": 0,
+    "False Alarm Episodes": 2,
+    "False Alarm Rate (Per Episode)": 1.0
+}

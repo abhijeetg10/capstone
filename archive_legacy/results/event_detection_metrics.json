@@ -1,0 +1,9 @@
+{
+    "Total Test Onsets": 3,
+    "Detected Onsets": 1,
+    "Missed Onsets": 2,
+    "Detection Rate": 0.3333333333333333,
+    "Mean Lead Time (Days)": 4.0,
+    "Median Lead Time (Days)": 4.0,
+    "False Alarms (Days)": 4
+}

@@ -1,0 +1,10 @@
+{
+    "parameters": 2945,
+    "bytes_per_param": 4,
+    "clients": 5,
+    "rounds": 10,
+    "transfers_per_round": 2,
+    "total_volume_bytes": 1178000,
+    "total_volume_mb": 1.1234283447265625,
+    "label": "Estimated model-parameter communication volume."
+}

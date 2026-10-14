@@ -1,0 +1,30 @@
+graph TD
+    subgraph Zone A
+        HA[Hospital Data] --> FA[Feature Extractor]
+        LA[Lab Data] --> FA
+        PA[Pharmacy Data] --> FA
+        WA[Weather Data] --> FA
+        FA --> MLA[Local PyTorch MLP]
+    end
+    subgraph Zone B
+        HB[Hospital Data] --> FB[Feature Extractor]
+        LB[Lab Data] --> FB
+        PB[Pharmacy Data] --> FB
+        WB[Weather Data] --> FB
+        FB --> MLB[Local PyTorch MLP]
+    end
+    subgraph Zones C D E
+        ZC[Data Sources] --> FZ[Feature Extractor]
+        FZ --> MLZ[Local PyTorch MLP]
+    end
+    MLA -.->|Model Gradients| Server[Flower FedAvg Server]
+    MLB -.->|Model Gradients| Server
+    MLZ -.->|Model Gradients| Server
+    Server --> |Global Model Update| MLA
+    Server --> |Global Model Update| MLB
+    Server --> |Global Model Update| MLZ
+    Server ==> Frozen[Frozen Global Model]
+    Frozen --> FastAPI[FastAPI Inference Service]
+    FastAPI <--> Node[Node.js Express Backend]
+    Node <--> DB[(PostgreSQL / PostGIS)]
+    Node <--> React[React GIS Dashboard]

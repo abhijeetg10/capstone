@@ -1,0 +1,12 @@
+graph TD
+    Start([Initialize Population]) --> Weather[Generate Weather & Beta]
+    Weather --> S[Susceptible]
+    S --> |Infection| E[Exposed]
+    E --> |Incubation| I[Infectious]
+    I --> |Recovery| R[Recovered]
+    R --> |Waning Immunity| S
+    I --> Obs[Generate Observables]
+    Obs --> H[Hospital Admissions via Multinomial Delay]
+    Obs --> L[Laboratory Tests via Binomial Subsampling]
+    Obs --> P[Pharmacy Sales via Moving Average Surge]
+    I --> Outbreak[Target: Outbreak Onset Next 7 Days]

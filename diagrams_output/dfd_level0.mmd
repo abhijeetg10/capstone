@@ -1,0 +1,8 @@
+graph LR
+    User([Public Health Authority])
+    System[SAMVED HealthGrid System]
+    Zone([Geographic Zones A-E])
+    
+    Zone -- Syndromic Data --> System
+    System -- Risk Heatmap & Alerts --> User
+    User -- Trigger Pipeline --> System

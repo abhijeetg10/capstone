@@ -1,0 +1,2 @@
+Max_Population_Error: 0
+Negative Compartments: 0

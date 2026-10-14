@@ -1,0 +1,21 @@
+graph TD
+    Z([Zone Data Sources])
+    P1((1. Generate Synthetic Data))
+    P2((2. Local Feature Extraction))
+    P3((3. Federated Training))
+    P4((4. Global Inference))
+    P5((5. PostGIS Storage))
+    D1[(Zone CSV Files)]
+    D2[(Global Frozen Model)]
+    D3[(Predictions Database)]
+    U([Dashboard User])
+
+    Z --> P1
+    P1 --> D1
+    D1 --> P2
+    P2 --> P3
+    P3 --> D2
+    D2 --> P4
+    P4 --> P5
+    P5 --> D3
+    D3 --> U

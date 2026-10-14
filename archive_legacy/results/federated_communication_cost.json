@@ -1,0 +1,8 @@
+{
+    "Trainable Parameters": 2945,
+    "Model Size (MB)": 0.011234283447265625,
+    "Clients": 5,
+    "Rounds": 10,
+    "Uploads/Downloads per Round": 10,
+    "Total Transfer Volume (MB)": 1.1234283447265625
+}

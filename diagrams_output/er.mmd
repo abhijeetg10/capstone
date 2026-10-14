@@ -1,0 +1,21 @@
+erDiagram
+    PREDICTIONS {
+        int id PK
+        varchar zone_id
+        timestamp prediction_date
+        float outbreak_probability
+        varchar risk_category
+        float hospital_cases
+        float lab_pos_rate
+        float pharm_sales_7d_mean
+        float temperature
+        timestamp created_at
+    }
+    HOSPITALS {
+        int id PK
+        varchar name
+        decimal latitude
+        decimal longitude
+        geometry geom
+    }
+    HOSPITALS ||--o{ PREDICTIONS : "located in zone"

@@ -1,0 +1,1 @@
+Equation: beta = baseline * weather_mult * (1 + 0.2*sin(season)) + drift

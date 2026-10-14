@@ -1,184 +1,62 @@
-# 🏥 Privacy-Preserving AI & Federated Learning Disease Surveillance System
+# Federated Multi-Source Disease Surveillance
 
-[![CI Build](https://github.com/abhijeetg10/capstone/actions/workflows/ci.yml/badge.svg)](https://github.com/abhijeetg10/capstone/actions/workflows/ci.yml)
-[![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![React 19](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Node.js Express](https://img.shields.io/badge/Backend-Node.js%20%2F%20Express-339933?logo=node.js&logoColor=white)](https://expressjs.com/)
-[![Python FastAPI](https://img.shields.io/badge/AI%20Service-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Flower Federated Learning](https://img.shields.io/badge/Federated%20Learning-Flower-FF6F00?logo=python&logoColor=white)](https://flower.ai/)
-[![PostGIS Database](https://img.shields.io/badge/Database-PostgreSQL%20%2B%20PostGIS-4169E1?logo=postgresql&logoColor=white)](https://postgis.net/)
+**Disclaimer:** *The research is a simulation-based proof-of-concept and has not been clinically validated on real-world healthcare data.*
 
-An enterprise-grade, privacy-preserving epidemiological surveillance platform designed for real-time disease outbreak detection, geospatial analytics, AI prediction, and decentralized cross-hospital federated learning.
+## Project Objective
+This project demonstrates a multi-source, privacy-preserving federated early warning system for localized epidemic outbreaks. It integrates heterogeneous data sources (hospitals, laboratories, pharmacies, and meteorology) to detect hidden disease outbreaks 5-7 days before peak case incidence, utilizing Federated Averaging (FedAvg) across spatially distributed regional zones.
 
----
+## Architecture
+The system employs a dual-track architecture:
+1. **Research Pipeline:** An extensive Python-based data generation and ML modeling pipeline that simulates latent SEIRS dynamics and evaluates Federated vs. Local vs. Centralized early warning models.
+2. **Production System:** A full-stack web application featuring:
+   - **PostgreSQL / PostGIS:** Geospatial storage for predictions and observables.
+   - **Node.js/Express Backend:** Aggregation and synchronization API.
+   - **FastAPI / PyTorch AI Service:** Live inference endpoint using the frozen pre-trained model.
+   - **React/Leaflet Frontend:** Interactive GIS dashboard for visualization.
 
-## 🌟 Key Features
+## Synthetic Simulation Methodology
+Because strictly coupled real-world, localized multi-source syndromic data with perfect latent ground truth is inaccessible, we utilize **Generator V2.1 FINAL**.
+- It implements a stochastic network-structured SEIRS model simulating daily latent outbreaks.
+- It couples the latent epidemiological reality to 12 realistic observables (hospital admissions, lab testing queues with capacity constraints, pharmacy over-the-counter sales surges, and meteorological drivers like temperature and humidity).
+- True early warning is strictly evaluated by forecasting latent outbreaks within a 7-day future horizon.
 
-- **🌐 Interactive Surveillance Dashboard**: Real-time epidemiological monitoring with Leaflet maps, hotspot clusters, time-series metrics, and analytical breakdown.
-- **🔒 Privacy-Preserving Federated Learning**: Decentralized machine learning training via [Flower](https://flower.ai/), enabling multi-hospital collaboration without transferring patient sensitive health records.
-- **🤖 Centralized AI Service**: High-performance FastAPI service hosting trained machine learning models (RandomForest, XGBoost) for disease prediction and anomaly detection.
-- **🗺️ Geospatial Analytics (PostGIS)**: Spatial indexing and spatial query support for precise disease mapping, regional clustering, and outbreak radius calculation.
-- **⚡ HIS / LIMS / PMS Integration**: Pre-built integration schemas for Hospital Information Systems, Laboratory Information Management Systems, and Pharmacy Management Systems.
-- **🐳 One-Command Containerization**: Complete multi-container orchestration with Docker & Docker Compose.
+## Training / Evaluation Procedure
+We employ a strictly prospective, chronological evaluation mechanism:
+- **Absolute Calendar Splits:** Data for each zone is split chronologically into 70% Train (Days 0-765), 15% Validation (Days 766-930), and 15% Test (Days 931-1094).
+- **Target Horizons:** Predictions are considered valid only if their entire 7-day horizon remains inside the chronological partition to prevent data leakage.
+- **Seed Split (Final Evaluation Firewall):** 
+  - Seeds 1000-1009 were used for model development, threshold selection (0.978), and architecture tuning.
+  - Seeds 1010-1049 (40 independent replications) were strictly locked and used exactly once for the final evaluation to prevent post-hoc optimization.
 
----
+## Final Model Architecture
+The frozen prediction engine is a PyTorch Multi-Layer Perceptron (MLP):
+- **Inputs:** 12 normalized observational features
+- **Architecture:** Linear(12) -> ReLU -> Dropout(0.2) -> Linear(64) -> ReLU -> Dropout(0.2) -> Linear(32) -> ReLU -> Linear(1)
+- **Parameters:** 2,945
+- **Optimizer:** Adam (LR: 5e-4)
 
-## 🏗️ Architecture Overview
+## How to Run the App (Production)
+1. **Start Docker Services:**
+   ```bash
+   docker-compose up --build -d
+   ```
+2. **Trigger the Prediction Pipeline (Integration Test):**
+   ```bash
+   curl -X POST http://localhost:5000/api/ai/trigger-pipeline
+   ```
+3. **View Dashboard:**
+   Navigate to `http://localhost:80` and view the Spatial GIS Radar to observe predictions on the Leaflet map.
 
-```
-                          ┌───────────────────────────┐
-                          │    React + Vite Web UI    │ (Port 80)
-                          └─────────────┬─────────────┘
-                                        │ REST / GeoJSON
-                                        ▼
-                          ┌───────────────────────────┐
-                          │   Node.js Express API     │ (Port 5000)
-                          └──────┬──────────────┬─────┘
-                                 │              │
-                    SQL / PostGIS│              │ HTTP Proxy
-                                 ▼              ▼
-           ┌──────────────────────────┐   ┌──────────────────────────┐
-           │ PostgreSQL + PostGIS DB  │   │  FastAPI AI Prediction   │
-           └──────────────────────────┘   └──────────────────────────┘
-                                                    (Port 8000)
+## How to Reproduce Research Experiments
+The archived final results are stored in `results_final/` and `paper_results/`.
+To completely reproduce the entire simulation pipeline from scratch:
+1. Run `python generate_synthetic_epidemic_v2_1_final.py` to generate the 50 replications.
+2. Run `python evaluation/phase4_final.py` to execute the full evaluation matrix.
+3. Run `python evaluation/phase4_finalization.py` to run multi-source ablations.
+4. Run `python evaluation/audit_episodes.py` to calculate exact warning episodes.
+5. Run `python evaluation/generate_tables.py` and `evaluation/generate_figures.py`.
 
-                     ┌──────────────────────────────────┐
-                     │     Flower FL Server (Port 8080) │
-                     └────────────────┬─────────────────┘
-                                      │ gRPC
-                  ┌───────────────────┼───────────────────┐
-                  ▼                   ▼                   ▼
-          ┌───────────────┐   ┌───────────────┐   ┌───────────────┐
-          │ Hospital Edge │   │ Laboratory    │   │ Pharmacy Edge │
-          │   Client 1    │   │ Edge Client   │   │    Client     │
-          └───────────────┘   └───────────────┘   └───────────────┘
-```
-
----
-
-## 📁 Repository Structure
-
-```
-disease-surveillance-system/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                # CI/CD Workflow for linting and build validation
-├── ai-service/                   # FastAPI Central AI Prediction Microservice
-│   ├── datasets/                 # Master epidemic dataset
-│   ├── inference/                # Model inference routines
-│   ├── models/                   # Machine learning models (Random Forest, XGBoost)
-│   ├── preprocessing/            # Data transformation & encoding
-│   ├── training/                 # Model training scripts
-│   ├── Dockerfile                # Docker container specification
-│   ├── main.py                   # FastAPI service entry point
-│   └── requirements.txt          # Python dependencies
-├── backend/                      # Node.js Express REST API
-│   ├── src/
-│   │   ├── config/               # Database connection config
-│   │   ├── controllers/          # Business logic handlers
-│   │   ├── middleware/           # Authentication & security
-│   │   ├── routes/               # API endpoint definitions
-│   │   └── app.js                # Express app entry point
-│   ├── Dockerfile                # Docker container specification
-│   └── package.json              # Node dependencies & scripts
-├── database/                     # PostGIS Schema & Seeding
-│   ├── schema/                   # DDL scripts for tables, indexes & functions
-│   └── seeds/                    # Initial database seed datasets
-├── flower-server/                # Federated Learning Aggregation Server
-│   ├── Dockerfile                # Docker container specification
-│   ├── requirements.txt          # Python FL dependencies
-│   └── server.py                 # Flower server entry point
-├── flower-clients/               # Edge Nodes (Local Training)
-│   ├── hospital-client/          # Hospital edge training client & partitioned data
-│   ├── laboratory-client/        # Lab edge training client
-│   └── pharmacy-client/          # Pharmacy edge training client
-├── frontend/                     # React 19 + Vite + Tailwind Web Application
-│   ├── public/                   # Static web assets
-│   ├── src/                      # UI Components, Leaflet Maps & Dashboards
-│   ├── Dockerfile                # Multi-stage production Nginx Dockerfile
-│   ├── nginx.conf                # Production SPA web server configuration
-│   └── package.json              # Web dependencies
-├── docker-compose.yml            # Multi-service Docker container orchestration
-├── setup_datasets.py             # Dataset generation & Non-IID partitioning tool
-├── .env.example                  # Environment variable configuration template
-├── .gitignore                    # Git untracked file rules
-└── README.md                     # Documentation
-```
-
----
-
-## 🚀 Quickstart with Docker Compose
-
-### Prerequisites
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (v20.10+)
-- [Git](https://git-scm.com/)
-
-### 1. Clone Repository & Setup Environment
-```bash
-git clone https://github.com/abhijeetg10/capstone.git
-cd capstone
-cp .env.example .env
-```
-
-### 2. Launch Containerized Services
-```bash
-docker-compose up --build -d
-```
-
-The services will start automatically on the following ports:
-
-| Service | Protocol / URL | Description |
-| :--- | :--- | :--- |
-| **Frontend Web Application** | [http://localhost:80](http://localhost:80) | Interactive Dashboard UI |
-| **Backend REST API** | [http://localhost:5000](http://localhost:5000) | Express Server API |
-| **AI Prediction Service** | [http://localhost:8000/docs](http://localhost:8000/docs) | FastAPI Swagger UI |
-| **Flower FL Aggregator** | `localhost:8080` | Federated Learning gRPC Port |
-| **PostgreSQL / PostGIS** | `localhost:5432` | Geospatial Spatial Database |
-
----
-
-## 🔬 Local Development Setup
-
-### 1. Prepare Datasets & Edge Partitions
-Run the cross-platform dataset setup script to generate non-IID hospital partitions:
-```bash
-python setup_datasets.py
-```
-
-### 2. Backend API Setup
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-### 3. Frontend Web Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 4. AI Prediction Service Setup
-```bash
-cd ai-service
-pip install -r requirements.txt
-python main.py
-```
-
-### 5. Running Federated Learning Training
-Start the central server:
-```bash
-python flower-server/server.py
-```
-In separate terminal instances, trigger hospital clients:
-```bash
-python flower-clients/hospital-client/client.py --hospital-id 1
-python flower-clients/hospital-client/client.py --hospital-id 2
-python flower-clients/hospital-client/client.py --hospital-id 3
-```
-
----
-
-## 📄 License
-This project is licensed under the MIT License - see the repository details for more information.
+## Limitations
+1. **Simulation Bounds:** The model fundamentally learns the causal couplings embedded in the SEIRS equations; translating this directly to real-world deployment requires fine-tuning on actual clinical registries.
+2. **False Warning Burden:** Because outbreak onsets are exceptionally rare, optimizing the decision threshold to capture >50% of outbreaks (EDR 55.3%) mathematically enforces a high absolute number of false warning episodes (~1.00 False Warning Rate per episode). A threshold capable of 0 false alarms (0.978) reduces detection to 0%. 
+3. **Geographic Heterogeneity Drift:** Due to structural variance across zones (Non-IID), collaborative federated learning only slightly outperformed localized learning, and both were substantially inferior to a fully Centralized repository.

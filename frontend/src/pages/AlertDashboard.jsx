@@ -12,7 +12,7 @@ const AlertDashboard = () => {
             <BellRing className="text-rose-500" />
             Emergency Alert Center
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Real-time public health broadcast and tracking</p>
+          <p className="text-slate-500 text-sm mt-1">Simulated real-time public health broadcast and tracking</p>
         </div>
 
         <div className="text-sm font-medium text-slate-500 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm flex items-center gap-2">

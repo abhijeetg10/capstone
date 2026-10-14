@@ -1,0 +1,8 @@
+{
+    "serialized_parameter_payload_size": 11780,
+    "number_of_clients": 5,
+    "number_of_rounds": 40,
+    "uploads_per_round": 5,
+    "downloads_per_round": 5,
+    "approximate_cumulative_parameter_transfer_volume": 4712000
+}

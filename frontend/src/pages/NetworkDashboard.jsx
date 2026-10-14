@@ -14,7 +14,7 @@ const NetworkDashboard = () => {
             <Network className="text-primary-400" size={32} />
             Federated Learning Network
           </h1>
-          <p className="text-slate-300 mt-2 text-lg">Decentralized training with encrypted aggregation</p>
+          <p className="text-slate-300 mt-2 text-lg">Decentralized training with data-local federated training</p>
         </div>
         
         <div className="flex items-center gap-3 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700">

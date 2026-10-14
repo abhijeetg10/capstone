@@ -74,7 +74,7 @@ const FLAnimationSVG = () => {
             {/* Background dashed line */}
             <line x1={node.cx} y1={node.cy} x2={server.cx} y2={server.cy} stroke="#1e293b" strokeWidth="2" strokeDasharray="10 10" />
             
-            {/* Uplink (Encrypted Weights) */}
+            {/* Uplink (Model Parameters) */}
             <motion.line 
               x1={node.cx} y1={node.cy} x2={server.cx} y2={server.cy} 
               stroke="url(#uplinkGrad)" strokeWidth="4" strokeLinecap="round"
@@ -121,7 +121,7 @@ const FLAnimationSVG = () => {
         ))}
         
         {/* Floating Text Explanations */}
-        <motion.text x="250" y="250" fill="#8b5cf6" fontSize="12" fontWeight="bold" variants={packetUplink} initial="initial" animate="animate">Encrypted Local Gradients</motion.text>
+        <motion.text x="250" y="250" fill="#8b5cf6" fontSize="12" fontWeight="bold" variants={packetUplink} initial="initial" animate="animate">Local Gradients</motion.text>
         <motion.text x="750" y="250" fill="#10b981" fontSize="12" fontWeight="bold" variants={packetDownlink} initial="initial" animate="animate">Updated Global Model</motion.text>
         
       </svg>

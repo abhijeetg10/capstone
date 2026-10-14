@@ -18,7 +18,7 @@ const highlights = [
     border: 'border-secondary-100'
   },
   {
-    title: 'Real-time Monitoring',
+    title: 'Simulated Real-time Ingestion',
     description: 'Continuous ingestion of health data enabling immediate detection and alert generation for disease outbreaks.',
     icon: <Activity size={32} className="text-rose-600" />,
     color: 'bg-rose-50',

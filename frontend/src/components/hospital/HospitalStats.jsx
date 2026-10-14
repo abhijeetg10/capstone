@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { Users, Cpu, Activity, AlertTriangle, RefreshCw, Globe } from 'lucide-react';
 
 const stats = [
-  { title: 'Patients Registered Today', value: '142', change: '+12', color: 'text-blue-600', bg: 'bg-blue-50', icon: <Users size={24} /> },
-  { title: 'Patients Processed by AI', value: '142', change: '100% Coverage', color: 'text-indigo-600', bg: 'bg-indigo-50', icon: <Cpu size={24} /> },
-  { title: 'Active Symptom Clusters', value: '3', change: 'Dengue, Malaria, Flu', color: 'text-rose-600', bg: 'bg-rose-50', icon: <Activity size={24} /> },
-  { title: 'High Risk Patients', value: '8', change: 'Flagged by AI', color: 'text-amber-600', bg: 'bg-amber-50', icon: <AlertTriangle size={24} /> },
-  { title: 'Last FL Sync', value: '12:30 PM', change: 'Successful', color: 'text-purple-600', bg: 'bg-purple-50', icon: <RefreshCw size={24} /> },
-  { title: 'Global Model Version', value: 'v1.2.0', change: 'Synced', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Globe size={24} /> },
+  { title: 'Total Confirmed Cases', value: '425', change: '+18 today', color: 'text-rose-600', bg: 'bg-rose-50', icon: <Users size={24} /> },
+  { title: 'Suspected (Sent to Lab)', value: '1,204', change: 'Awaiting Results', color: 'text-amber-600', bg: 'bg-amber-50', icon: <Activity size={24} /> },
+  { title: 'Cases Last 24H', value: '89', change: '+12% from yesterday', color: 'text-blue-600', bg: 'bg-blue-50', icon: <RefreshCw size={24} /> },
+  { title: 'Next Day Prediction', value: '110 Cases', change: 'High Confidence', color: 'text-purple-600', bg: 'bg-purple-50', icon: <Cpu size={24} /> },
+  { title: 'Outbreak Risk', value: 'ELEVATED', change: 'Dengue Cluster Active', color: 'text-rose-600', bg: 'bg-rose-100', icon: <AlertTriangle size={24} /> },
+  { title: 'Active AI Nodes', value: 'Online', change: 'Global Sync Active', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Globe size={24} /> },
 ];
 
 const HospitalStats = () => {

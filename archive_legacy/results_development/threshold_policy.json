@@ -1,0 +1,4 @@
+{
+    "policy": "maximize_validation_F1",
+    "derived_threshold": 0.8518745303153992
+}

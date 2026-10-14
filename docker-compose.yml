@@ -80,6 +80,76 @@ services:
     networks:
       - surveillance-network
 
+  flower-client-a:
+    build:
+      context: ./flower-clients
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_client_a
+    environment:
+      - FLOWER_SERVER_HOST=flower-server
+      - FLOWER_SERVER_PORT=8080
+      - ZONE_ID=Zone_A
+    depends_on:
+      - flower-server
+    networks:
+      - surveillance-network
+
+  flower-client-b:
+    build:
+      context: ./flower-clients
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_client_b
+    environment:
+      - FLOWER_SERVER_HOST=flower-server
+      - FLOWER_SERVER_PORT=8080
+      - ZONE_ID=Zone_B
+    depends_on:
+      - flower-server
+    networks:
+      - surveillance-network
+
+  flower-client-c:
+    build:
+      context: ./flower-clients
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_client_c
+    environment:
+      - FLOWER_SERVER_HOST=flower-server
+      - FLOWER_SERVER_PORT=8080
+      - ZONE_ID=Zone_C
+    depends_on:
+      - flower-server
+    networks:
+      - surveillance-network
+
+  flower-client-d:
+    build:
+      context: ./flower-clients
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_client_d
+    environment:
+      - FLOWER_SERVER_HOST=flower-server
+      - FLOWER_SERVER_PORT=8080
+      - ZONE_ID=Zone_D
+    depends_on:
+      - flower-server
+    networks:
+      - surveillance-network
+
+  flower-client-e:
+    build:
+      context: ./flower-clients
+      dockerfile: Dockerfile
+    container_name: disease_surveillance_flower_client_e
+    environment:
+      - FLOWER_SERVER_HOST=flower-server
+      - FLOWER_SERVER_PORT=8080
+      - ZONE_ID=Zone_E
+    depends_on:
+      - flower-server
+    networks:
+      - surveillance-network
+
 volumes:
   db-data:
 

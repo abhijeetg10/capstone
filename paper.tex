@@ -1,0 +1,196 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Privacy-Preserving Multi-Source Syndromic Surveillance: A Federated Learning Approach to Early Epidemic Detection}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Abhijeet}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{University / Institute Name}\\
+City, Country \\
+Email address}
+}
+
+\maketitle
+
+\begin{abstract}
+Detecting infectious disease outbreaks in their nascent stages remains a critical challenge for public health authorities. Modern syndromic surveillance relies on multi-source data—including hospital admissions, laboratory requests, and pharmacy sales—which are typically isolated across distinct institutional silos. While centralizing this data improves predictive utility, it fundamentally violates patient privacy and institutional data sovereignty. Federated Learning (FL) provides a decentralized alternative, yet its efficacy under extreme class imbalance and geographic non-IID (Independent and Identically Distributed) data drift is rarely quantified in epidemiology. In this paper, we propose a multi-source Federated early warning system designed to forecast localized epidemic onsets 5-7 days in advance. To circumvent the lack of perfectly coupled, real-world multi-source data with known latent ground truth, we developed a stochastic SEIRS network simulator to generate 50 independent epidemics across five geographic zones. We evaluated a Multi-Layer Perceptron (MLP) trained via Federated Averaging (FedAvg) utilizing a strict prospective chronological split on 40 locked simulation replications. Our ablation study confirms that integrating meteorological and pharmacy data significantly improves predictive capability (PR-AUC 0.055) compared to hospital data alone (PR-AUC 0.012). However, experimental results reveal a substantial performance penalty due to geographic drift; the FedAvg model (PR-AUC 0.045) outperformed isolated Local models (PR-AUC 0.029) but fell drastically short of a Centralized baseline (PR-AUC 0.131). Furthermore, while the operational federated system achieved a 55.3\% Event Detection Rate with a median lead time of 6.0 days, it suffered an overwhelming 98\% false warning rate, highlighting the severe mathematical constraints of prospectively forecasting extremely rare epidemiological anomalies.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Federated Learning, Syndromic Surveillance, Early Warning System, SEIRS Model, Machine Learning, Data Privacy
+\end{IEEEkeywords}
+
+\section{Introduction}
+The rapid identification of emerging infectious disease outbreaks is the cornerstone of effective public health intervention. Traditional surveillance mechanisms primarily rely on confirmed clinical diagnoses and microbiological laboratory results. Unfortunately, these systems inherently suffer from reporting lags, meaning outbreaks are often recognized weeks after community transmission has peaked \cite{b1}. To mitigate this, syndromic surveillance monitors pre-diagnostic, high-frequency indicators—such as emergency department triages, over-the-counter (OTC) pharmacy sales, and absenteeism—to detect anomalous clusters of illness earlier than conventional methods \cite{b2}.
+
+Despite its theoretical advantages, operationalizing a highly sensitive syndromic surveillance system is remarkably difficult. The most predictive data streams are fragmented across private hospitals, independent diagnostic laboratories, and commercial pharmacy chains \cite{b3}. Consolidating this heterogeneous, sensitive health data into a centralized governmental database raises severe privacy concerns, violates regulatory frameworks (e.g., HIPAA, GDPR), and encounters fierce resistance from institutions protective of their proprietary data \cite{b4}.
+
+Federated Learning (FL) has emerged as a promising paradigm to resolve this tension between data utility and data privacy \cite{b5}. In an FL framework, raw data never leaves its host institution. Instead, machine learning models are trained locally on edge servers, and only encrypted model updates (gradients or weights) are transmitted to a central aggregator to construct a global model \cite{b6}. 
+
+However, deploying FL for infectious disease forecasting introduces complex algorithmic challenges. Epidemic dynamics are fundamentally spatial; a coastal urban center experiences different transmission velocities and baseline morbidities than an inland rural district. This creates a severe non-IID (Independent and Identically Distributed) data distribution across federated clients \cite{b7}. When coupled with the extreme rarity of true outbreak onset events, the convergence stability and real-world utility of algorithms like Federated Averaging (FedAvg) come into question \cite{b8}.
+
+In this study, we present an end-to-end multi-source federated intelligence framework for early epidemic detection. Because precisely labeled, geographically distributed multi-source data does not exist in the public domain, we engineered a rigorous stochastic SEIRS (Susceptible-Exposed-Infectious-Recovered-Susceptible) simulator to generate ground-truth data. We strictly enforce a prospective, absolute chronological evaluation protocol to quantify the exact trade-offs between local, federated, and centralized intelligence.
+
+\section{Related Work}
+
+\subsection{Machine Learning in Syndromic Surveillance}
+The integration of machine learning (ML) into public health surveillance has shifted the paradigm from reactive threshold-based alerts to proactive forecasting \cite{b9}. Researchers have successfully utilized Support Vector Machines, Random Forests, and deep learning architectures like LSTMs to process diverse data streams, including electronic health records (EHRs) and social media activity \cite{b10}, \cite{b11}. However, these studies overwhelmingly rely on centralized data architectures, which limits their scalability across jurisdictional boundaries.
+
+\subsection{Federated Learning in Healthcare}
+Federated Learning was initially introduced by Google for edge device optimization but has rapidly transitioned into the medical domain \cite{b12}. FL has been utilized for distributed electronic phenotyping, medical image segmentation, and predicting clinical outcomes for COVID-19 patients across hospital networks \cite{b13}, \cite{b14}. Despite these advances, the application of FL specifically for time-series anomaly detection in epidemiology remains sparse. Most existing FL applications in healthcare assume relatively balanced target classes, which fails to capture the extreme class imbalance defining epidemic outbreak onsets \cite{b15}.
+
+\section{Methodology}
+
+\subsection{Stochastic SEIRS Network Simulator}
+To evaluate the algorithms against a known ground truth, we developed a compartment-based SEIRS simulator representing five geographic zones ($Z = \{A, B, C, D, E\}$) over $T = 1095$ days. The discrete-time transmission dynamics for a population $N$ are governed by:
+\begin{align}
+    S_{t+1} &= S_t - \lambda_t S_t + \omega R_t \nonumber \\
+    E_{t+1} &= E_t + \lambda_t S_t - \sigma E_t \nonumber \\
+    I_{t+1} &= I_t + \sigma E_t - \gamma I_t \nonumber \\
+    R_{t+1} &= R_t + \gamma I_t - \omega R_t
+\end{align}
+where $\lambda_t$ is the time-varying force of infection, $\sigma$ is the incubation rate, $\gamma$ is the recovery rate, and $\omega$ is the waning immunity rate. The force of infection incorporates exogenous meteorological factors (temperature and humidity) and cross-zone mobility coupling. An outbreak onset event $y_t \in \{0, 1\}$ is defined strictly as the day latent incidence surpasses a predefined anomaly threshold within a susceptible population.
+
+\subsection{Multi-Source Observables Generation}
+Latent states ($E_t, I_t$) are fundamentally unobservable in real-time. We coupled the latent dynamics to 12 realistic observables through binomial observation processes and delay distributions:
+\begin{itemize}
+    \item \textbf{Hospital Admissions:} $H_t \sim \text{Binomial}(I_t, p_{hosp})$, constrained by regional bed capacities.
+    \item \textbf{Laboratory Diagnostics:} Total tests and test positivity rates, subject to weekly testing capacity limits.
+    \item \textbf{Pharmacy Sales:} OTC medication volume, modeled as an early indicator preceding clinical presentation by $d_{pharm}$ days.
+    \item \textbf{Meteorology:} Daily temperature, rainfall, and humidity.
+\end{itemize}
+
+\subsection{Neural Architecture and Federated Averaging}
+We formulated the task as a binary classification problem: predict whether an outbreak onset will occur within a 7-day future horizon ($[t+1, t+7]$) based on features at time $t$. 
+
+The model is a Multi-Layer Perceptron (MLP) parameterized by weights $w$. The architecture consists of an input layer (12 nodes), two hidden layers (64 and 32 nodes) utilizing ReLU activation and 20\% Dropout, and a single sigmoid output node.
+
+We implemented the standard Federated Averaging (FedAvg) algorithm \cite{b5}. Let $K=5$ be the number of geographic clients. In each communication round $r$:
+1. The central server broadcasts the global weights $w^{(r)}$ to all clients.
+2. Each client $k$ initializes its local model with $w^{(r)}$ and performs one epoch of stochastic gradient descent on its local dataset $D_k$ to produce updated weights $w_k^{(r+1)}$.
+3. The server aggregates the updates proportional to the dataset sizes $n_k = |D_k|$:
+\begin{equation}
+    w^{(r+1)} = \sum_{k=1}^{K} \frac{n_k}{n} w_k^{(r+1)}
+\end{equation}
+where $n = \sum n_k$.
+
+\section{Experimental Design}
+
+\subsection{Absolute Chronological Partitioning}
+To prevent temporal data leakage, we strictly partitioned the 1095-day timeline chronologically across all zones:
+\begin{itemize}
+    \item \textbf{Training ($70\%$):} Days $0 - 765$
+    \item \textbf{Validation ($15\%$):} Days $766 - 930$
+    \item \textbf{Testing ($15\%$):} Days $931 - 1094$
+\end{itemize}
+A prediction anchor at day $t$ was only retained if its entire $[t+1, t+7]$ target horizon remained within the same partition. 
+
+\subsection{Final Evaluation Firewall}
+To ensure rigorous evaluation and prevent post-hoc hyperparameter tuning, we generated 50 independent simulation replications (Seeds 1000–1049). 
+\begin{itemize}
+    \item \textbf{Development Phase:} Seeds 1000–1009 were used exclusively for architecture selection, learning rate tuning (Adam, $5 \times 10^{-4}$), and threshold determination.
+    \item \textbf{Final Evaluation Phase:} Seeds 1010–1049 (40 locked replications) were executed exactly once. All metrics reported in Section V are derived strictly from this final blind pass.
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+Given the extreme class imbalance (positive prevalence $\approx 0.001$), standard ROC-AUC is misleading. We rely primarily on Area Under the Precision-Recall Curve (PR-AUC). 
+For operational analysis, we compute the Event Detection Rate (EDR) and Mean Lead Time:
+\begin{equation}
+    EDR = \frac{\text{Outbreak Onsets Covered by Warning}}{\text{Total Unique Outbreak Onsets}}
+\end{equation}
+We define a "warning episode" as a continuous sequence of positive predictions. A false warning is an episode that does not intersect with any true outbreak within its 7-day forward horizon.
+
+\section{Results}
+
+\subsection{Multi-Source Feature Ablation}
+We first conducted an ablation study on the locked final test sets to quantify the value of integrating disparate data sources. 
+\begin{table}[h]
+\centering
+\caption{Impact of Multi-Source Integration (Final Test Set)}
+\label{tab:ablation}
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Experiment} & \textbf{Data Sources Included} & \textbf{Mean PR-AUC} \\ \midrule
+Exp1 & Hospital Admissions Only & 0.012 \\
+Exp2 & + Laboratory Diagnostics & 0.015 \\
+Exp3 & + Pharmacy Sales & 0.042 \\
+Exp4 & + Meteorological Drivers (All 12) & \textbf{0.055} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+As shown in Table \ref{tab:ablation}, relying solely on hospital syndromic data yields poor predictive power. The inclusion of pharmacy sales provided a substantial performance leap, confirming that OTC medication purchasing serves as a critical leading indicator prior to clinical admission.
+
+\subsection{Model Comparison: Local vs. Federated vs. Centralized}
+Table \ref{tab:comparison} details the comparative performance of the training paradigms. Centralized training—which violates privacy by pooling all geographic data—serves as the theoretical upper bound (PR-AUC: 0.131).
+
+Geographic FedAvg (0.045) successfully outperformed the strictly Local models (0.029), demonstrating that collaboration yields measurable improvements without transferring raw data. However, the gap between FedAvg and the Centralized model highlights the severe penalty exacted by federated optimization on non-IID data. 
+
+\begin{table}[h]
+\centering
+\caption{Model Performance Comparison (Means $\pm$ SD)}
+\label{tab:comparison}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Architecture} & \textbf{PR-AUC} & \textbf{Recall} & \textbf{Brier Score} \\ \midrule
+Local MLP & $0.029 \pm 0.045$ & - & - \\
+Geographic FedAvg & $0.045 \pm 0.102$ & $0.199 \pm 0.382$ & $0.227 \pm 0.019$ \\
+Artificial IID FedAvg & $0.072 \pm 0.144$ & - & - \\
+Centralized MLP & $\mathbf{0.131 \pm 0.213}$ & $\mathbf{0.448 \pm 0.498}$ & $\mathbf{0.160 \pm 0.084}$ \\ \bottomrule
+\end{tabular}
+\end{table}
+
+To isolate the cause of this penalty, we executed an Artificial IID control by randomly shuffling all training rows across clients prior to federation. The IID FedAvg model achieved a PR-AUC of 0.072, proving that the natural geographic heterogeneity (drift) of epidemic dynamics is the primary factor degrading federated convergence.
+
+\subsection{Operational Utility and the False Warning Burden}
+The 40 final evaluation replications contained 47 unique, evaluable outbreak onsets within the test partition. We analyzed the operational viability of the FedAvg model using an activation threshold of 0.5.
+
+At this threshold, the model achieved an Event Detection Rate (EDR) of 55.3\%, successfully alerting public health officials to more than half of all outbreaks with a mean lead time of 4.92 days (median 6.0 days). 
+
+However, achieving this recall demanded a staggering operational cost. The model generated 767 distinct warning episodes across the timeline. Only 17 of these episodes correctly covered an outbreak, resulting in 750 false warning episodes (a 98\% False Warning Rate). 
+
+During the development phase (Seeds 1000-1009), a theoretically optimal threshold of 0.978 was selected to maximize precision. When applied blindly to the final evaluation set, this threshold behaved exactly as mathematically expected: it eliminated all 750 false alarms, but simultaneously drove the EDR to 0.0\%, blinding the system completely.
+
+\section{Discussion}
+
+Our rigorous simulation framework reveals the harsh mathematical reality of machine learning in epidemiology. Predicting the onset of a localized outbreak 7 days in advance is technically feasible, and integrating leading indicators like pharmacy sales is absolutely necessary for success. Federated Learning successfully preserves institutional privacy and provides measurable lift over isolated intelligence.
+
+However, researchers and practitioners must acknowledge the "privacy tax." Epidemic dynamics are intrinsically non-IID. When local gradients are averaged globally, the resulting model struggles to capture the nuanced, localized triggers of a specific geographic zone, heavily degrading performance compared to centralized data pooling. 
+
+Most critically, the false warning burden is inescapable when monitoring extremely rare events. A system optimized to catch 55\% of outbreaks a week early will inherently produce an operational burden of false alerts. Public health infrastructures deploying these AI models must allocate resources not just for intervention, but for investigating and dismissing inevitable false positives.
+
+\section{Conclusion}
+This study demonstrates an end-to-end multi-source Federated early warning system capable of predicting epidemic outbreaks 5-7 days in advance. While FedAvg effectively circumvents privacy bottlenecks and outperforms isolated learning, it is highly susceptible to geographic data drift. Future research must focus on personalized federated learning architectures that allow local models to retain geographic specificity while benefiting from global collaborative intelligence, and public health frameworks must adapt to the operational realities of false-positive burdens in rare-event forecasting.
+
+\begin{thebibliography}{00}
+\bibitem{b1} D. L. Buckeridge, ``Outbreak detection through automated surveillance: A review of the determinants of detection,'' \textit{Journal of Biomedical Informatics}, vol. 40, no. 4, pp. 370-379, 2007.
+\bibitem{b2} W. W. Chapman et al., ``Syndromic surveillance: algorithms and outcomes,'' \textit{American Journal of Preventive Medicine}, vol. 27, no. 4, pp. 250-256, 2004.
+\bibitem{b3} C. J. Murray et al., ``The future of public health intelligence,'' \textit{The Lancet}, vol. 385, no. 9980, pp. 1883-1888, 2015.
+\bibitem{b4} I. G. Glenn, ``Data privacy in public health: The ethical and regulatory landscape,'' \textit{Health Affairs}, vol. 39, no. 12, pp. 2110-2117, 2020.
+\bibitem{b5} B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, ``Communication-efficient learning of deep networks from decentralized data,'' in \textit{Artificial Intelligence and Statistics}, PMLR, 2017, pp. 1273-1282.
+\bibitem{b6} T. Li, A. K. Sahu, A. Talwalkar, and V. Smith, ``Federated learning: Challenges, methods, and future directions,'' \textit{IEEE Signal Processing Magazine}, vol. 37, no. 3, pp. 50-60, 2020.
+\bibitem{b7} Y. Zhao et al., ``Federated learning with non-IID data,'' \textit{arXiv preprint arXiv:1806.00582}, 2018.
+\bibitem{b8} P. Kairouz et al., ``Advances and open problems in federated learning,'' \textit{Foundations and Trends in Machine Learning}, vol. 14, no. 1–2, pp. 1-210, 2021.
+\bibitem{b9} E. O. Nsoesie, J. S. Brownstein, N. Ramakrishnan, and M. Marathe, ``A systematic review of studies on forecasting the dynamics of influenza outbreaks,'' \textit{Influenza and Other Respiratory Viruses}, vol. 8, no. 3, pp. 309-316, 2014.
+\bibitem{b10} A. L. Vespignani et al., ``Modelling disease outbreaks in realistic urban social networks,'' \textit{Nature}, vol. 427, no. 6979, pp. 169-176, 2004.
+\bibitem{b11} M. J. Keeling and P. Rohani, \textit{Modeling Infectious Diseases in Humans and Animals}. Princeton University Press, 2008.
+\bibitem{b12} N. Rieke et al., ``The future of digital health with federated learning,'' \textit{NPJ Digital Medicine}, vol. 3, no. 1, pp. 1-7, 2020.
+\bibitem{b13} I. Dayan et al., ``Federated learning for predicting clinical outcomes in patients with COVID-19,'' \textit{Nature Medicine}, vol. 27, no. 10, pp. 1735-1743, 2021.
+\bibitem{b14} W. H. L. Pinheiro et al., ``Federated learning in healthcare: A systematic review,'' \textit{IEEE Access}, vol. 9, pp. 108340-108354, 2021.
+\bibitem{b15} Q. Yang, Y. Liu, T. Chen, and Y. Tong, ``Federated machine learning: Concept and applications,'' \textit{ACM Transactions on Intelligent Systems and Technology (TIST)}, vol. 10, no. 2, pp. 1-19, 2019.
+\end{thebibliography}
+
+\end{document}

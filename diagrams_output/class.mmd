@@ -1,0 +1,31 @@
+classDiagram
+    class ZoneClient {
+        +String zone_id
+        +MLP model
+        +Tensor x_train
+        +Tensor y_train
+        +get_parameters()
+        +set_parameters()
+        +fit()
+        +evaluate()
+    }
+    class MLP {
+        +Sequential net
+        +forward(x)
+    }
+    class FedAvgServer {
+        +aggregate_fit()
+        +aggregate_evaluate()
+        +start_server()
+    }
+    class InferenceAPI {
+        +load_artifacts()
+        +predict_outbreak(OutbreakPredictionRequest)
+    }
+    class SyntheticGenerator {
+        +run_simulation(seed, output_dir)
+    }
+    ZoneClient --> MLP : trains
+    FedAvgServer "1" *-- "5" ZoneClient : orchestrates
+    InferenceAPI --> MLP : serves
+    SyntheticGenerator ..> ZoneClient : provides data

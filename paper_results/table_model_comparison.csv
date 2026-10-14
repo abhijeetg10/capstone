@@ -1,0 +1,4 @@
+Method,PR-AUC,Recall,F1,Brier
+Local MLP,0.0288 ± 0.0452,-,-,-
+Geographic FedAvg,0.0452 ± 0.1018,0.1989 ± 0.3822,0.0171 ± 0.0419,0.2266
+Centralized MLP,0.1314 ± 0.2128,0.4479 ± 0.4978,0.0548 ± 0.0954,0.1598

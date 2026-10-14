@@ -1,7 +1,9 @@
 import React from 'react';
 import { Hospital, Shield } from 'lucide-react';
 import HospitalStats from '../components/hospital/HospitalStats';
-import SymptomClusterDetection from '../components/hospital/SymptomClusterDetection';
+import HospitalBedStats from '../components/hospital/HospitalBedStats';
+import DiseaseSurveillanceTracker from '../components/hospital/DiseaseSurveillanceTracker';
+import DemographicAnalytics from '../components/hospital/DemographicAnalytics';
 import EarlyWarningPanel from '../components/hospital/EarlyWarningPanel';
 import FederatedLearningMonitor from '../components/hospital/FederatedLearningMonitor';
 import LocalAIPerformance from '../components/hospital/LocalAIPerformance';
@@ -33,10 +35,13 @@ const HospitalDashboard = () => {
       {/* 1. Top Statistics Cards */}
       <HospitalStats />
       
+      {/* 1b. Live Bed Capacity & ICU Availability */}
+      <HospitalBedStats />
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* 2. Symptom Cluster Detection (Main Module) */}
+        {/* 2. Disease Surveillance Tracker (Main Module) */}
         <div className="lg:col-span-2">
-          <SymptomClusterDetection />
+          <DiseaseSurveillanceTracker />
         </div>
         
         {/* 3. Early Warning Panel */}
@@ -51,9 +56,9 @@ const HospitalDashboard = () => {
           <DiseaseTrendAnalytics />
         </div>
         
-        {/* 5. Local AI Performance */}
+        {/* 5. Demographic Analytics */}
         <div className="lg:col-span-1">
-          <LocalAIPerformance />
+          <DemographicAnalytics />
         </div>
       </div>
 
@@ -63,8 +68,9 @@ const HospitalDashboard = () => {
           <FederatedLearningMonitor />
         </div>
 
-        {/* 7. Notifications */}
-        <div className="lg:col-span-1">
+        {/* 7. Local AI & Notifications */}
+        <div className="lg:col-span-1 flex flex-col gap-6">
+          <LocalAIPerformance />
           <HospitalNotifications />
         </div>
       </div>

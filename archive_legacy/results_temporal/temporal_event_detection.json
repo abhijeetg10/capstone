@@ -1,0 +1,10 @@
+{
+    "Total Evaluable Onsets": 3,
+    "Detected Onsets": 0,
+    "Event Detection Rate": 0.0,
+    "Mean Lead Time": 0,
+    "Total Warning Episodes": 11,
+    "True Warning Episodes": 0,
+    "False Warning Episodes": 11,
+    "False Alarm Rate": 1.0
+}

@@ -1,0 +1,3 @@
+Experiment,PR-AUC
+Geographic Non-IID FedAvg,0.0452
+Artificial IID FedAvg,0.0723

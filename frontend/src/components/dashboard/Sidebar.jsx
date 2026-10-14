@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Hospital, TestTube, Map, TrendingUp, Bell, Settings, X, LogOut, Pill, Network, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, Hospital, TestTube, Map, TrendingUp, Bell, Settings, X, LogOut, Pill, Network, AlertTriangle, Database, Server } from 'lucide-react';
 
 const Sidebar = ({ onClose }) => {
   const location = useLocation();
@@ -20,8 +20,11 @@ const Sidebar = ({ onClose }) => {
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard', allowed: ['administration'] },
     { name: 'GIS Mapping', icon: <Map size={20} />, path: '/dashboard/gis', allowed: ['administration', 'researcher'] },
     { name: 'Hospitals', icon: <Hospital size={20} />, path: '/dashboard/hospitals', allowed: ['administration', 'hospital'] },
+    { name: 'Hospital ERD System', icon: <Database size={18} />, path: '/dashboard/hospital-erd', allowed: ['hospital'] },
     { name: 'Laboratories', icon: <TestTube size={20} />, path: '/dashboard/labs', allowed: ['administration', 'laboratory'] },
+    { name: 'Laboratory ERD System', icon: <Database size={18} />, path: '/dashboard/laboratory-erd', allowed: ['laboratory'] },
     { name: 'Pharmacies', icon: <Pill size={20} />, path: '/dashboard/pharmacies', allowed: ['administration', 'pharmacy'] },
+    { name: 'Pharmacy ERD System', icon: <Database size={18} />, path: '/dashboard/pharmacy-erd', allowed: ['pharmacy'] },
     { name: 'Predictions', icon: <TrendingUp size={20} />, path: '/dashboard/predictions', allowed: ['administration', 'researcher'] },
     { name: 'Alerts', icon: <AlertTriangle size={20} />, path: '/dashboard/alerts', allowed: ['administration'] },
     { name: 'FL Network', icon: <Network size={20} />, path: '/dashboard/network', allowed: ['administration'] },

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant React Dashboard
+    participant Node Backend
+    participant FastAPI
+    participant Frozen Global Model
+    participant PostGIS DB
+
+    React Dashboard->>Node Backend: POST /api/ai/trigger-pipeline
+    Node Backend->>FastAPI: POST /predict-outbreak (zone_data)
+    FastAPI->>Frozen Global Model: Forward pass (scaled_inputs)
+    Frozen Global Model-->>FastAPI: outbreak_probability
+    FastAPI-->>Node Backend: JSON (prob, risk_category)
+    Node Backend->>PostGIS DB: INSERT INTO predictions
+    PostGIS DB-->>Node Backend: Success
+    Node Backend-->>React Dashboard: 200 OK (predictions)

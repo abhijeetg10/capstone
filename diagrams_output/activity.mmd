@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> GenerateData
+    GenerateData --> ChronologicalSplit
+    ChronologicalSplit --> FitScalerOnTrain
+    FitScalerOnTrain --> ScaleFeatures
+    ScaleFeatures --> FLRoundBegin
+    FLRoundBegin --> TrainLocalModels
+    TrainLocalModels --> AggregateWeightsFedAvg
+    AggregateWeightsFedAvg --> UpdateGlobalModel
+    UpdateGlobalModel --> CheckRounds
+    CheckRounds --> FLRoundBegin : Rounds < 10
+    CheckRounds --> SaveFrozenModel : Rounds == 10
+    SaveFrozenModel --> RunInference
+    RunInference --> [*]

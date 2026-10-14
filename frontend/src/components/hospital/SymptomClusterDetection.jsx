@@ -18,7 +18,7 @@ const SymptomClusterDetection = () => {
             <Activity className="text-primary-600" size={20} />
             AI Symptom Cluster Detection
           </h2>
-          <p className="text-sm text-slate-500 mt-1">Real-time symptom clustering from incoming HIS records</p>
+          <p className="text-sm text-slate-500 mt-1">Simulated real-time symptom clustering from incoming HIS records</p>
         </div>
       </div>
 

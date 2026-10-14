@@ -1,0 +1,13 @@
+graph TD
+    subgraph Docker Host
+        frontend(disease_surveillance_frontend :80)
+        backend(disease_surveillance_backend :5000)
+        ai(disease_surveillance_ai :8000)
+        flower(disease_surveillance_flower_server :8080)
+        clientA(disease_surveillance_flower_client_a)
+        db[(disease_surveillance_db :5432)]
+    end
+    frontend -.-> backend
+    backend -.-> ai
+    backend -.-> db
+    clientA -.-> flower

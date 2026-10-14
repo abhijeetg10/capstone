@@ -38,7 +38,7 @@ const Hero = () => {
               Disease Surveillance Portal
             </h1>
             <p className="text-lg lg:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0">
-              An official privacy-preserving, AI-driven administration platform for real-time monitoring and proactive healthcare decision-making in Islampur.
+              An official privacy-preserving, AI-driven administration platform for simulated real-time monitoring and proactive healthcare decision-making in Islampur.
             </p>
             <Link to="/login">
               <motion.button 

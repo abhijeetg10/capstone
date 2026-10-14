@@ -54,3 +54,7 @@ logs/
 # Database data
 pgdata/
 *.sqlite3
+
+# Installers and temporary report builds
+*.msi
+temp_report_*.docx

@@ -1,0 +1,19 @@
+graph LR
+    actorPHO((Public Health Official))
+    actorAdmin((System Administrator))
+    actorFLServer((Flower Server))
+    actorZoneClient((Zone Client))
+    
+    actorPHO --> UC1([View Geographic Risk Map])
+    actorPHO --> UC2([View Surveillance Alerts])
+    actorPHO --> UC3([Trigger Simulation Pipeline])
+    
+    actorAdmin --> UC4([Start FL Rounds])
+    actorAdmin --> UC5([Monitor Backend Status])
+    
+    actorFLServer --> UC6([Aggregate Local Weights])
+    actorFLServer --> UC7([Broadcast Global Model])
+    
+    actorZoneClient --> UC8([Generate Feature Vector])
+    actorZoneClient --> UC9([Train Local MLP])
+    actorZoneClient --> UC10([Transmit Weights to FLServer])

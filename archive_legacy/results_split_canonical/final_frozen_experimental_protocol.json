@@ -1,0 +1,14 @@
+{
+    "architecture": "MLP",
+    "input_features": 12,
+    "preprocessing": "StandardScaler_LocalMeans",
+    "threshold_selection_rule": "maximize_validation_F1",
+    "selected_operational_threshold": 0.9783716201782227,
+    "fedavg_rounds": 10,
+    "local_epochs": 1,
+    "learning_rate": 0.0005,
+    "batch_size": 256,
+    "loss": "BCEWithLogitsLoss",
+    "number_of_clients": 5,
+    "aggregation_rule": "dataset_size_weighted"
+}

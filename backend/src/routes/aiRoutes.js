@@ -1,12 +1,9 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
-import { getPredictions } from '../controllers/aiController.js';
+import { runPredictionPipeline, getLatestPredictions } from '../controllers/predictionController.js';
 
 const router = express.Router();
 
-// All authenticated users can view AI predictions (though UI will restrict some views)
-router.use(authenticateToken);
-
-router.get('/predictions', getPredictions);
+router.post('/trigger-pipeline', runPredictionPipeline);
+router.get('/latest-predictions', getLatestPredictions);
 
 export default router;

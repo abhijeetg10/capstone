@@ -1,0 +1,13 @@
+graph TD
+    UI[React UI Frontend]
+    Backend[Node.js Backend]
+    AI[FastAPI AI Service]
+    Server[Flower FedAvg Server]
+    Clients[Flower Client x5]
+    DB[(PostgreSQL / PostGIS)]
+
+    UI <--> Backend
+    Backend <--> AI
+    Backend <--> DB
+    Server <--> Clients
+    AI -.-> Clients

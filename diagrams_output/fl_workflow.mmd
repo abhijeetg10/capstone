@@ -1,0 +1,14 @@
+graph TD
+    Start([Initialize Global Model]) --> Bcast[Server Broadcasts Weights]
+    Bcast --> C1[Zone A trains locally]
+    Bcast --> C2[Zone B trains locally]
+    Bcast --> C3[Zone C trains locally]
+    C1 --> Send1[Send Gradients to Server]
+    C2 --> Send2[Send Gradients to Server]
+    C3 --> Send3[Send Gradients to Server]
+    Send1 --> Agg[FedAvg Aggregation]
+    Send2 --> Agg
+    Send3 --> Agg
+    Agg --> Check{Rounds > 10?}
+    Check -->|No| Bcast
+    Check -->|Yes| Freeze([Freeze Model])

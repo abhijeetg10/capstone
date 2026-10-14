@@ -1,0 +1,5 @@
+Equation S_to_E,Binomial(S_t, 1 - exp(-beta * I_t / N))
+Equation E_to_I,Binomial(E_t, 1 - exp(-sigma))
+Equation I_to_R,Binomial(I_t, 1 - exp(-gamma))
+Equation R_to_S,Binomial(R_t, 1 - exp(-loss_of_immunity))
+Max_Population_Error,66.0

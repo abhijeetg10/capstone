@@ -14,7 +14,7 @@ import AlertDashboard from './AlertDashboard';
 
 const slides = [
   { id: 'overview', component: <DashboardOverview />, title: 'Global Operations Center' },
-  { id: 'gis', component: <GISDashboard />, title: 'Real-time Geospatial Tracking' },
+  { id: 'gis', component: <GISDashboard />, title: 'Simulated Real-time Geospatial Tracking' },
   { id: 'hospital', component: <HospitalDashboard />, title: 'Hospital Edge Node' },
   { id: 'lab', component: <LabDashboard />, title: 'Laboratory Edge Node' },
   { id: 'pharmacy', component: <PharmacyDashboard />, title: 'Pharmacy Edge Node' },
